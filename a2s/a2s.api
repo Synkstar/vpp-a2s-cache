@@ -1,0 +1,56 @@
+option version = "0.3.0";
+import "vnet/interface_types.api";
+
+typedef a2s_key {
+    u32 ip;
+    u16 port;
+};
+
+typedef a2s_data {
+    u8 INFO_DATA[2000];
+    u8 PLAYER_DATA[2000];
+    u8 RULES_DATA[10000];
+    u16 info_length;
+    u16 player_length;
+    u16 rules_length;
+    bool strict;
+};
+
+typedef clib_bihash_kv_a2s {
+    vl_api_a2s_key_t key;
+    vl_api_a2s_data_t value;
+};
+
+/** @brief API to enable / disable a2s on an interface
+    @param client_index - opaque cookie to identify the sender
+    @param context - sender context, to match reply w/ request
+    @param enable_disable - 1 to enable, 0 to disable the feature
+    @param sw_if_index - interface handle
+*/
+autoreply define a2s_enable_disable {
+    /* Client identifier, set from api_main.my_client_index */
+    u32 client_index;
+
+    /* Arbitrary context, so client can match reply to request */
+    u32 context;
+
+    /* Enable / disable the feature */
+    bool enable_disable;
+
+    /* Interface handle */
+    vl_api_interface_index_t sw_if_index;
+};
+
+/** @brief API to set a2s data
+    @param client_index - opaque cookie to identify the sender
+    @param context - sender context, to match reply w/ request
+    @param is_add - Boolean for adding or removing
+    @param kv - Key value pair to be inserted or removed
+*/
+autoreply define a2s_set_data {
+    /* Client identifier, set from api_main.my_client_index */
+    u32 client_index;
+    u32 context;
+    bool is_add;
+    vl_api_clib_bihash_kv_a2s_t kv;
+};
